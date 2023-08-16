@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tirolevents/01_presentation/tirolevents/widgets/tirolevent_item.dart';
 
-import '../../../02_application/tirolevents/tirolevents_bloc.dart';
-import '../../../02_application/tirolevents/tirolevents_event.dart';
-import '../../../02_application/tirolevents/tirolevents_state.dart';
+
+import '../../../02_application/tiroleventsbloc/tirolevents_bloc.dart';
+import '../../../02_application/tiroleventsbloc/tirolevents_event.dart';
+import '../../../02_application/tiroleventsbloc/tirolevents_state.dart';
 import '../../../03_domain/entities/tirolevents_entity.dart';
 
 class TirolEventsBody extends StatelessWidget {

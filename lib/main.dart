@@ -1,13 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '01_presentation/routes/router.dart';
-import '01_presentation/tirolevents/tirolevents_page.dart';
-import '02_application/tirolevents/tirolevents_bloc.dart';
+import '02_application/authbloc/authbloc/auth_bloc.dart';
+import '02_application/tiroleventsbloc/tirolevents_bloc.dart';
+import 'firebase_options.dart';
 import 'injection.dart' as di;
 import 'injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await di.init();
   runApp(MyApp());
 }
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<TirolEventsBloc>(),
+      create: (context) => sl<AuthBloc>()..add(AuthCheckRequestedEvent()),
       child: MaterialApp.router(
         routeInformationParser: _appRouter.defaultRouteParser(),
         routerDelegate: _appRouter.delegate(),

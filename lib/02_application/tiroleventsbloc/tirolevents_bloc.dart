@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:tirolevents/02_application/tirolevents/tirolevents_event.dart';
-import 'package:tirolevents/02_application/tirolevents/tirolevents_state.dart';
+
+import 'package:tirolevents/02_application/tiroleventsbloc/tirolevents_event.dart';
+import 'package:tirolevents/02_application/tiroleventsbloc/tirolevents_state.dart';
 
 import '../../03_domain/entities/tirolevents_entity.dart';
 import '../../03_domain/usecases/tirolevents_usecases.dart';
