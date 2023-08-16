@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "584618041481",
+    "project_id": "tirolevent-5e282",
+    "storage_bucket": "tirolevent-5e282.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584618041481:android:e3e081753a61f8c403e658",
+        "android_client_info": {
+          "package_name": "com.example.tirolevents"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584618041481-lj09uiej94kqg4mo5gv0ber82pevr0pu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfg9Fbo1yr0iunK-MQtCpKT6utLk8r6aM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584618041481-lj09uiej94kqg4mo5gv0ber82pevr0pu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
