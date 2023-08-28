@@ -1,16 +1,25 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
+import 'package:tirolevents/03_domain/entities/id.dart';
 import 'package:tirolevents/03_domain/entities/tirolevents_entity.dart';
 import 'package:tirolevents/03_domain/repositories/tirolevent_repository.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tirolevents/04_infrastructure/extensions/firebase_helpers.dart';
+import '../../03_domain/entities/random_tirol_coordinates.dart';
 import '../../core/exceptions/exceptions.dart';
 import '../../core/failures/failures.dart';
 import '../datasources/tirolevents_remote_datasource.dart';
+import '../models/tirolevents_firebase_model.dart';
 import '../models/tirolevents_model.dart';
 
 class TirolEventsRepositoryImpl implements TirolEventsRepository {
   final TirolEventsRemoteDatasource tirolEventsRemoteDatasource;
+  final FirebaseFirestore firebaseFirestore;
 
-  TirolEventsRepositoryImpl({required this.tirolEventsRemoteDatasource});
+  TirolEventsRepositoryImpl(
+      {required this.tirolEventsRemoteDatasource,
+      required this.firebaseFirestore});
 
   @override
   Future<Either<Failure, List<TirolEventsEntity>>> getTirolEventsFromApi(
@@ -58,16 +67,111 @@ class TirolEventsRepositoryImpl implements TirolEventsRepository {
       print(hyperlink);
 
       TirolEventsEntity tirolEvent = TirolEventsEntity(
+          id: UniqueID.fromUniqueString(""),
           title: title,
-          imageUrl: imageUrl,
+          imageURL: imageUrl,
           date: date,
           description: description,
-          hyperlink: hyperlink);
+          hyperlink: hyperlink,
+          isOwnEvent: false,
+          coordinate: RandomTirolCoordinate(),
+          key: UniqueKey());
 
       listTirolEvents.add(tirolEvent);
       print("---");
     }
 
     return listTirolEvents;
+  }
+
+  @override
+  Stream<Either<Failure, List<TirolEventsEntity>>>
+      getTirolEventsFromFirebase() async* {
+    final userDoc = await firebaseFirestore.userDocument();
+
+    yield* userDoc.tirolEventCollection
+        .snapshots()
+        .map((snapshot) => right<Failure, List<TirolEventsEntity>>(snapshot.docs
+            .map(
+                (doc) => TirolEventsFirebaseModel.fromFirestore(doc).toDomain())
+            .toList()))
+        .handleError((e) {
+      if (e is FirebaseException) {
+        if (e.code.contains('permission-denied') ||
+            e.code.contains('PERMISSION_DENIED')) {
+          return left(InsufficientPermissions());
+        } else {
+          return left(UnexpectedFailure());
+        }
+      } else {
+        return left(UnexpectedFailure());
+      }
+    });
+  }
+
+  @override
+  Future<Either<Failure, Unit>> createTirolEvent(
+      TirolEventsEntity tirolEventsEntity) async {
+    try {
+      final userDoc = await firebaseFirestore.userDocument();
+      final tirolEventModel =
+          TirolEventsFirebaseModel.fromDomain(tirolEventsEntity);
+
+      await userDoc.tirolEventCollection
+          .doc(tirolEventModel.id)
+          .set(tirolEventModel.toMap());
+
+      return right(unit);
+    } on FirebaseException catch (e) {
+      if (e.code.contains("PERMISSION_DENIED")) {
+        return left(InsufficientPermissions());
+      } else {
+        return left(UnexpectedFailure());
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> updateTirolEvent(
+      TirolEventsEntity tirolEventsEntity) async {
+    try {
+      final userDoc = await firebaseFirestore.userDocument();
+      final tirolEventModel =
+          TirolEventsFirebaseModel.fromDomain(tirolEventsEntity);
+
+      await userDoc.tirolEventCollection
+          .doc(tirolEventModel.id)
+          .update(tirolEventModel.toMap());
+
+      return right(unit);
+    } on FirebaseException catch (e) {
+      if (e.code.contains("PERMISSION_DENIED")) {
+        // NOT_FOUND
+        return left(InsufficientPermissions());
+      } else {
+        return left(UnexpectedFailure());
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteTirolEvent(
+      TirolEventsEntity tirolEventsEntity) async {
+    try {
+      final userDoc = await firebaseFirestore.userDocument();
+      final tirolEventModel =
+          TirolEventsFirebaseModel.fromDomain(tirolEventsEntity);
+
+      await userDoc.tirolEventCollection.doc(tirolEventModel.id).delete();
+
+      return right(unit);
+    } on FirebaseException catch (e) {
+      if (e.code.contains("PERMISSION_DENIED")) {
+        // NOT_FOUND
+        return left(InsufficientPermissions());
+      } else {
+        return left(UnexpectedFailure());
+      }
+    }
   }
 }

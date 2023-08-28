@@ -15,6 +15,7 @@ class SignupPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: Colors.redAccent,
+        height: double.infinity,
         child: BlocProvider(
             create: (context) => sl<SignupformBloc>(), child: const SignupForm()),
       ),

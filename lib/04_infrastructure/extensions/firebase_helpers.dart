@@ -16,6 +16,6 @@ extension FirestorExt on FirebaseFirestore {
 }
 
 extension DocumentReferenceExt on DocumentReference {
-  CollectionReference<Map<String, dynamic>> get todoCollection =>
-      collection("todos");
+  CollectionReference<Map<String, dynamic>> get tirolEventCollection =>
+      collection("tirolevent");
 }

@@ -71,96 +71,113 @@ class SignupForm extends StatelessWidget {
                 }));
       },
       builder: (context, state) {
-        return Form(
-          autovalidateMode: state.showValidationMessages
-              ? AutovalidateMode.always
-              : AutovalidateMode.disabled,
-          key: formKey,
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              const SizedBox(
-                height: 80,
-              ),
-              const Text(
-                "Welcome",
-                style: TextStyle(color: Colors.white, fontSize: 40),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                "Please register or sign in",
-                style: TextStyle(color: Colors.white, fontSize: 30)
-              ),
-              const SizedBox(
-                height: 80,
-              ),
-              TextFormField(
-                cursorColor: Colors.white,
-                decoration: const InputDecoration(labelText: "E-Mail"),
-                validator: validateEmail,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                cursorColor: Colors.white,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: "Password",
-                ),
-                validator: validatePassword,
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              CustomButton(
-                buttonText: "Sign in",
-                callback: () {
-                  if (formKey.currentState!.validate()) {
-                    BlocProvider.of<SignupformBloc>(context).add(
-                        SignInWithEmailAndPasswordPressed(
-                            email: _email, password: _password));
-                  } else {
-                    BlocProvider.of<SignupformBloc>(context).add(
-                        SignInWithEmailAndPasswordPressed(
-                            email: null, password: null));
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          child: Form(
+            autovalidateMode: state.showValidationMessages
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
+            key: formKey,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 80,
+                  ),
+                  const Text(
+                    "Welcome",
+                    style: TextStyle(color: Colors.white, fontSize: 40),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Please register or sign in",
+                    style: TextStyle(color: Colors.white, fontSize: 30)
+                  ),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    cursorColor: Colors.white,
+                    decoration: const InputDecoration(
+                      labelText: "E-Mail",
+                      labelStyle: TextStyle(color: Colors.black),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)
+                      ),
+                    ),
+                    validator: validateEmail,
 
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        backgroundColor: Colors.redAccent,
-                        content: Text("invalid input")));
-                  }
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomButton(
-                buttonText: "Register",
-                callback: () {
-                  if (formKey.currentState!.validate()) {
-                    BlocProvider.of<SignupformBloc>(context).add(
-                        RegisterWithEmailAndPasswordPressed(
-                            email: _email, password: _password));
-                  } else {
-                    BlocProvider.of<SignupformBloc>(context).add(
-                        RegisterWithEmailAndPasswordPressed(
-                            email: null, password: null));
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    cursorColor: Colors.white,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.black),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)
+                      ),
+                    ),
+                    validator: validatePassword,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  CustomButton(
+                    buttonText: "Sign in",
+                    callback: () {
+                      if (formKey.currentState!.validate()) {
+                        BlocProvider.of<SignupformBloc>(context).add(
+                            SignInWithEmailAndPasswordPressed(
+                                email: _email, password: _password));
+                      } else {
+                        BlocProvider.of<SignupformBloc>(context).add(
+                            SignInWithEmailAndPasswordPressed(
+                                email: null, password: null));
 
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        backgroundColor: Colors.redAccent,
-                        content: Text("invalid input")));
-                  }
-                },
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            backgroundColor: Colors.redAccent,
+                            content: Text("invalid input")));
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  CustomButton(
+                    buttonText: "Register",
+                    callback: () {
+                      if (formKey.currentState!.validate()) {
+                        BlocProvider.of<SignupformBloc>(context).add(
+                            RegisterWithEmailAndPasswordPressed(
+                                email: _email, password: _password));
+                      } else {
+                        BlocProvider.of<SignupformBloc>(context).add(
+                            RegisterWithEmailAndPasswordPressed(
+                                email: null, password: null));
+
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            backgroundColor: Colors.redAccent,
+                            content: Text("invalid input")));
+                      }
+                    },
+                  ),
+                  if (state.isSubmitting) ...[
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const LinearProgressIndicator()
+                  ]
+                ],
               ),
-              if (state.isSubmitting) ...[
-                const SizedBox(
-                  height: 10,
-                ),
-                const LinearProgressIndicator()
-              ]
-            ],
+            ),
           ),
         );
       },

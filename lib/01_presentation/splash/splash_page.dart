@@ -15,7 +15,7 @@ class SplashPage extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthStateAuthenticated) {
           // navigate to home
-          context.router.replace(const HomeRoute());
+          context.router.replace(const TirolEventsRoute());
         } else if (state is AuthStateUnauthenticated) {
           // navigate to signin
           context.router.replace(const SignupRoute());

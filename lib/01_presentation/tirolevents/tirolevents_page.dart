@@ -18,78 +18,189 @@ class TirolEventsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<TirolEventsBloc>(context).add(TirolEventsRequestEvent());
+    final size = MediaQuery.of(context).size;
+    final bloc = sl<TirolEventsBloc>()..add(TirolEventsRequestEvent());
 
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthStateUnauthenticated) {
-          AutoRouter.of(context).push(const SignupRoute());
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.redAccent,
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: const Text("Tirol Events"),
-        ),
-        body: Center(
-          child: Container(
-            color: Colors.redAccent,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+    return BlocProvider<TirolEventsBloc>(
+      create: (context) => bloc,
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthStateUnauthenticated) {
+            AutoRouter.of(context).push(const SignupRoute());
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.redAccent,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title: const Text("Tirol Events"),
+          ),
+          body: Center(
+            child: Container(
+              color: Colors.redAccent,
               child: Column(
                 children: [
                   Expanded(
-                    child: Center(
-                        child: BlocBuilder<TirolEventsBloc, TirolEventsState>(
-                            bloc: BlocProvider.of<TirolEventsBloc>(context),
-                            builder: (context, tirolEventsState) {
-                              if (tirolEventsState is TirolEventsInitial) {
-                                return const Text("Waiting for button");
-                              } else if (tirolEventsState
-                                  is TirolEventsStateLoading) {
-                                return const CircularProgressIndicator();
-                              } else if (tirolEventsState
-                                  is TirolEventsStateLoaded) {
-                                return TirolEventsBody(
-                                    tirolEvents:
-                                        tirolEventsState.tirolEventsList);
-                              } else if (tirolEventsState
-                                  is TirolEventsStateError) {
-                                return ErrorMessage(
-                                    message: tirolEventsState.message);
-                              }
-                              return const Placeholder();
-                            })),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Center(
+                          child: BlocBuilder<TirolEventsBloc, TirolEventsState>(
+                              bloc: bloc,
+                              builder: (context, tirolEventsState) {
+                                if (tirolEventsState is TirolEventsInitial) {
+                                  return const CircularProgressIndicator(color: Colors.white);
+                                } else if (tirolEventsState
+                                    is TirolEventsStateLoading) {
+                                  return const CircularProgressIndicator(color: Colors.white);
+                                } else if (tirolEventsState
+                                    is TirolEventsStateLoaded) {
+                                  return TirolEventsBody(
+                                      tirolEvents:
+                                          tirolEventsState.tirolEventsList);
+                                } else if (tirolEventsState
+                                    is TirolEventsStateError) {
+                                  return ErrorMessage(
+                                      message: tirolEventsState.message);
+                                }
+                                return const Placeholder();
+                              })),
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          height: 80,
-                          child: Center(
-                            child: CustomButton(
-                                buttonText: 'Reload Events',
-                                callback: () {
-                                  BlocProvider.of<TirolEventsBloc>(context)
-                                      .add(TirolEventsRequestEvent());
-                                }),
-                          )),
-                      const SizedBox(
-                        width: 20,
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [0, 0.7],
+                        colors: [
+                          Colors.transparent,
+                          Colors.black26
+                          //Colors.white70,
+                        ],
                       ),
-                      SizedBox(
-                          height: 80,
-                          child: Center(
-                            child: CustomButton(
-                                buttonText: 'Logout',
-                                callback: () {
-                                  BlocProvider.of<AuthBloc>(context)
-                                      .add(SignOutPressedEvent());
-                                }),
-                          )),
-                    ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              bloc.add(TirolEventsRequestEvent());
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.downloading,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              BlocProvider.of<AuthBloc>(context)
+                                  .add(SignOutPressedEvent());
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.logout,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              AutoRouter.of(context).push(TirolEventsFormRoute(
+                                  tirolEventsEntity: null));
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.add,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              AutoRouter.of(context).push(
+                                  TirolEventsOverviewMapRoute(
+                                      tiroleventsList: bloc.allEvents));
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.map_outlined,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   )
                 ],
               ),

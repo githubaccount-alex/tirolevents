@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tirolevents/01_presentation/tirolevents/widgets/tirolevent_item.dart';
 
-
 import '../../../02_application/tiroleventsbloc/tirolevents_bloc.dart';
 import '../../../02_application/tiroleventsbloc/tirolevents_event.dart';
 import '../../../02_application/tiroleventsbloc/tirolevents_state.dart';
@@ -37,10 +36,13 @@ class TirolEventsBody extends StatelessWidget {
                   SliverPadding(
                       padding: const EdgeInsets.all(_spacing),
                       sliver: SliverGrid(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final tirolEvent = state.tirolEventsList[index];
-                          return TirolEventItem(tirolEventItem: tirolEvent);
-                        }, childCount: state.tirolEventsList.length),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final tirolEvent = state.tirolEventsList[index];
+                            return TirolEventItem(tirolEventItem: tirolEvent);
+                          },
+                          childCount: state.tirolEventsList.length,
+                        ),
                         gridDelegate:
                             const SliverGridDelegateWithMaxCrossAxisExtent(
                                 maxCrossAxisExtent: 150,
@@ -50,8 +52,9 @@ class TirolEventsBody extends StatelessWidget {
                       ))
                 ]),
           );
-        } else
-          return Placeholder();
+        } else {
+          return const Placeholder();
+        }
       },
     );
   }

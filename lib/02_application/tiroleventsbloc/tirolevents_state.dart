@@ -17,3 +17,6 @@ class TirolEventsStateError extends TirolEventsState {
 
   TirolEventsStateError({required this.message});
 }
+
+class TirolEventDeleteSuccess extends TirolEventsState {}
+

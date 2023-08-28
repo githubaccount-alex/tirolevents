@@ -14,16 +14,17 @@ class CustomButton extends StatelessWidget {
       onTap: () => callback(),
       child: Material(
         elevation: 20,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
-          width: 150,
+          width: 100,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15), color: Colors.white30),
+              borderRadius: BorderRadius.circular(8), color: Colors.white30),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             child: Text(
               buttonText,
               textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 10),
             ),
           ),
         ),

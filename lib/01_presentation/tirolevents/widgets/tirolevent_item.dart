@@ -1,7 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../02_application/tiroleventsbloc/tirolevents_bloc.dart';
 import '../../../03_domain/entities/tirolevents_entity.dart';
+import '../../../injection.dart';
 import '../../routes/router.gr.dart';
 
 class TirolEventItem extends StatelessWidget {
@@ -12,6 +16,7 @@ class TirolEventItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return InkResponse(
       onTap: () {
         AutoRouter.of(context)
@@ -23,7 +28,9 @@ class TirolEventItem extends StatelessWidget {
         color: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
-              color: const Color.fromRGBO(253, 242, 242, 1.0),
+              color: tirolEventItem.isOwnEvent
+                  ? Colors.lightBlueAccent
+                  : const Color.fromRGBO(253, 242, 242, 1.0),
               borderRadius: BorderRadius.circular(15)),
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -50,10 +57,15 @@ class TirolEventItem extends StatelessWidget {
                   Expanded(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        tirolEventItem.imageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: tirolEventItem.imageURL,
+                        placeholder: (context, url) => const CircularProgressIndicator(color: Colors.red),
+                        errorWidget: (context, url, error) => Image.asset('assets/images/image-placeholder.jpg'),
+                        width: size.width,
+                        height: 250,
                         fit: BoxFit.cover,
                       ),
+
                     ),
                   ),
                 ]),
